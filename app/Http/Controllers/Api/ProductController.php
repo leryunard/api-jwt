@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * php artisan make:controller Api/ProductController --api
+     * php artisan make:controller Api/ProductController --api (create controller with api resource)
      */
     public function index()
     {

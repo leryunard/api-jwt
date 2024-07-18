@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * php artisan make:controller Api/CategoryController --api
+     * php artisan make:controller Api/CategoryController --api (create controller with api resource)
      */
     public function index()
     {
@@ -22,11 +23,23 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-    
-        $category = Category::create($validated);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => 'required|string|max:255',
+            ],
+            [
+                'name.required' => 'El nombre es obligatorio.',
+                'name.string' => 'El nombre debe ser una cadena de texto.',
+                'name.max' => 'El nombre no puede exceder los 255 caracteres.',
+            ],
+        );
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        $category = Category::create($request->only('name'));
         return response()->json($category, 201);
     }
 
@@ -41,14 +54,29 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, string $id)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-    
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name' => 'required|string|max:255',
+            ],
+            [
+                'name.required' => 'El nombre es obligatorio.',
+                'name.string' => 'El nombre debe ser una cadena de texto.',
+                'name.max' => 'El nombre no puede exceder los 255 caracteres.',
+            ],
+        );
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
         $category = Category::findOrFail($id);
-        $category->update($validated);
+        $category->update($request->only('name'));
         return response()->json($category);
     }
 
