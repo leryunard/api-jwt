@@ -45,6 +45,15 @@ Para crear migraciones, controladores, modelos y seeders para tu API, sigue esto
 
 Siguiendo estos pasos, podrás instalar Laravel, crear los componentes necesarios para tu API y comenzar a construir tu aplicación.
 
+## Autenticación de la API Rest de Laravel usando JWT
+
+Para agregar autenticación a tu API de Laravel usando JWT (JSON Web Tokens), sigue estos pasos:
+
+1. Instala el paquete JWTAuth: `composer require tymon/jwt-auth`
+2. Publica la configuración del paquete: `php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"`
+3. Genera la clave secreta JWT: `php artisan jwt:secret`
+4. Agregue estas variable al `.env` para que podamos cerrar sesión en nuestros usuarios: `JWT_SHOW_BLACKLIST_EXCEPTION=true`
+
 ## Patrocinadores de Laravel
 
 Nos gustaría agradecer a los siguientes patrocinadores por financiar el desarrollo de Laravel. Si estás interesado en convertirte en patrocinador, visita el [programa de socios de Laravel](https://partners.laravel.com).
