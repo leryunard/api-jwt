@@ -110,4 +110,19 @@ class AuthController extends Controller
             ]);
         }
     }
+
+    public function profile()
+    {
+        return response()->json(auth()->user());
+    }
+
+    public function admin()
+    {
+        return response()->json(['message' => 'Welcome, Admin!']);
+    }
+
+    public function editPosts()
+    {
+        return response()->json(['message' => 'You can edit posts']);
+    }
 }
