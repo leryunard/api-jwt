@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -27,33 +30,63 @@ class AuthController extends Controller
             'password' => 'required|string|min:6|max:255',
         ]);
 
-        // if the request valid, create user
+        try {
+            // start a database transaction
+            DB::beginTransaction();
 
-        $user = $this->user::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => bcrypt($request['password']),
-        ]);
+            // if the request valid, create user
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = bcrypt($request->password);
+            
+            $user->save();
+            
+            // logica de asignacion de roles y permisos
+            $userRol = Role::where('name', 'lector')->where('estado',true)->first();
+            $userAsignacion = User::where('email', $user->email)->first();
+            
+            $lectorPermission = Permission::where('name','publish_post')->where('estado',true)->first();
+        
+            $userRol->permissions()->attach($lectorPermission);
+            $userAsignacion->roles()->attach($userRol);
 
-        // login the user immediately and generate the token
-        $token = auth()->login($user);
+            // commit the transaction if all the operations are successful
+            DB::commit();
 
-        // return the response as json 
-        return response()->json([
-            'meta' => [
-                'code' => 200,
-                'status' => 'success',
-                'message' => 'User created successfully!',
-            ],
-            'data' => [
-                'user' => $user,
-                'access_token' => [
-                    'token' => $token,
-                    'type' => 'Bearer',
-                    'expires_in' => auth()->factory()->getTTL() * 60,    // get token expires in seconds
+            // login the user immediately and generate the token
+            $token = auth()->login($user);
+
+            // return the response as json 
+            return response()->json([
+                'meta' => [
+                    'code' => 200,
+                    'status' => 'success',
+                    'message' => 'User created successfully!',
                 ],
-            ],
-        ]);
+                'data' => [
+                    'user' => $user,
+                    'access_token' => [
+                        'token' => $token,
+                        'type' => 'Bearer',
+                        'expires_in' => auth()->factory()->getTTL() * 60,    // get token expires in seconds
+                    ],
+                ],
+            ]);
+        } catch (\Exception $e) {
+            // rollback the transaction if any operation fails
+            DB::rollback();
+
+            // return the error response as json
+            return response()->json([
+                'meta' => [
+                    'code' => 500,
+                    'status' => 'error',
+                    'message' => 'Failed to create user. ' . $e->getMessage(),
+                ],
+                'data' => [],
+            ]);
+        }
     }
 
     public function login(Request $request)
@@ -124,5 +157,10 @@ class AuthController extends Controller
     public function editPosts()
     {
         return response()->json(['message' => 'You can edit posts']);
+    }
+
+    public function publishPosts()
+    {
+        return response()->json(['message' => 'You can publish posts']);
     }
 }

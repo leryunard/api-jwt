@@ -20,6 +20,6 @@ class PermissionMiddleware
             return $next($request);
         }
 
-        return response()->json(['error' => 'Unauthorized'], 403);
+        return response()->json(['error' => 'No autorizado'], 403);
     }
 }

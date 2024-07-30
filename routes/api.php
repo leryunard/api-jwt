@@ -48,8 +48,10 @@ Route::middleware('auth:api')->group(function() {
     Route::group(['middleware' => ['role:admin']], function() {
         Route::get('admin', [AuthController::class, 'admin']);
     });
-
-    Route::group(['middleware' => ['permission:edit_posts']], function() {
-        Route::get('edit-posts', [AuthController::class, 'editPosts']);
+    
+    Route::prefix('post')->group(function () {
+        Route::get('edit-posts', [AuthController::class, 'editPosts'])->middleware(['permission:edit_post']);
+        Route::get('publish-posts', [AuthController::class, 'publishPosts'])->middleware(['permission:publish_post']);
     });
+
 });
