@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\SchemaAudit;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,6 +21,21 @@ return new class extends Migration
             $table->longText('exception');
             $table->timestamp('failed_at')->useCurrent();
         });
+
+        $schemaAudit = new SchemaAudit([
+            'auditable_type' => 'failed_jobs',
+            'auditable_id' => 1,
+            'new_values' => [
+                'uuid' => 'string',
+                'connection' => 'text',
+                'queue' => 'text',
+                'payload' => 'longText',
+                'exception' => 'longText',
+                'failed_at' => 'timestamp',
+            ],
+            'event' => 'created',
+        ]);
+        $schemaAudit->save();
     }
 
     /**
@@ -28,5 +44,19 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('failed_jobs');
+        $schemaAudit = new SchemaAudit([
+            'auditable_type' => 'failed_jobs',
+            'auditable_id' => 1,
+            'new_values' => [
+                'uuid' => 'string',
+                'connection' => 'text',
+                'queue' => 'text',
+                'payload' => 'longText',
+                'exception' => 'longText',
+                'failed_at' => 'timestamp',
+            ],
+            'event' => 'dropped',
+        ]);
+        $schemaAudit->save();
     }
 };

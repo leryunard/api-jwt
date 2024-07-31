@@ -1,24 +1,57 @@
 <?php
-
 namespace Database\Seeders;
 
-use App\Models\Permission;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\SchemaAudit;
+use App\Models\Permission;
+use Illuminate\Support\Facades\Log;
 
 class PermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // create permissions
-        Permission::insert([
-            ['name' => 'create_post', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'edit_post', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'delete_post', 'created_at' => now(), 'updated_at' => now()],
-            ['name' => 'publish_post', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        // Obtener todos los registros de SchemaAudit
+        $schemaAudit = SchemaAudit::all();
+
+        $permissions = [];
+
+        // Recorrer cada registro de SchemaAudit y agregar permisos para create, edit, delete
+        foreach ($schemaAudit as $audit) {
+            $entity = $audit->auditable_type;
+
+            $permissions[] = [
+                'name' => $entity . '_create',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            $permissions[] = [
+                'name' => $entity . '_edit',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            $permissions[] = [
+                'name' => $entity . '_delete',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        Log::info($schemaAudit);
+
+        // Filtrar los permisos para eliminar duplicados
+        $existingPermissions = Permission::pluck('name')->toArray();
+
+        $permissions = array_filter($permissions, function($permission) use ($existingPermissions) {
+            return !in_array($permission['name'], $existingPermissions);
+        });
+
+        // Insertar los permisos filtrados usando updateOrCreate para evitar duplicados
+        try {
+            foreach ($permissions as $permission) {
+                Permission::updateOrCreate(['name' => $permission['name']], $permission);
+            }
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 }
