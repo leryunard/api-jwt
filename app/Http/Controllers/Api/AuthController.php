@@ -33,7 +33,7 @@ class AuthController extends Controller
         try {
             // start a database transaction
             DB::beginTransaction();
-
+           
             // if the request valid, create user
             $user = new User();
             $user->name = $request->name;
@@ -41,7 +41,13 @@ class AuthController extends Controller
             $user->password = bcrypt($request->password);
             
             $user->save();
-            
+            $id_user = $user->id; 
+            $auditLogs = $user->audits;
+            $auditLogs->each(function ($audit) use ($id_user) {
+                $audit->user_id = $id_user;
+                $audit->save();
+            });
+         
             // logica de asignacion de roles y permisos
             $userRol = Role::where('name', 'lector')->where('estado',true)->first();
             $userAsignacion = User::where('email', $user->email)->first();

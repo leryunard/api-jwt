@@ -36,8 +36,6 @@ class PermissionSeeder extends Seeder
             ];
         }
 
-        Log::info($schemaAudit);
-
         // Filtrar los permisos para eliminar duplicados
         $existingPermissions = Permission::pluck('name')->toArray();
 

@@ -52,7 +52,7 @@ Para agregar autenticación a tu API de Laravel usando JWT (JSON Web Tokens), si
 1. Instala el paquete JWTAuth: `composer require tymon/jwt-auth`
 2. Publica la configuración del paquete: `php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServiceProvider"`
 3. Genera la clave secreta JWT: `php artisan jwt:secret`
-4. Agregue estas variable al `.env` para que podamos cerrar sesión en nuestros usuarios: `JWT_SHOW_BLACKLIST_EXCEPTION=true`
+4. Agregue variable al `.env` para que podamos cerrar sesión en nuestros usuarios: `JWT_SHOW_BLACKLIST_EXCEPTION=true`
 
 ## Patrocinadores de Laravel
 
