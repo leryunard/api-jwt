@@ -20,17 +20,27 @@ class PermissionSeeder extends Seeder
             $entity = $audit->auditable_type;
 
             $permissions[] = [
-                'name' => $entity . '_create',
+                'name' => $entity . '_index',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
             $permissions[] = [
-                'name' => $entity . '_edit',
+                'name' => $entity . '_store',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
             $permissions[] = [
-                'name' => $entity . '_delete',
+                'name' => $entity . '_show',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            $permissions[] = [
+                'name' => $entity . '_update',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+            $permissions[] = [
+                'name' => $entity . '_destroy',
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
@@ -46,7 +56,7 @@ class PermissionSeeder extends Seeder
         // Insertar los permisos filtrados usando updateOrCreate para evitar duplicados
         try {
             foreach ($permissions as $permission) {
-                Permission::updateOrCreate(['name' => $permission['name']], $permission);
+                Permission::updateOrCreate(['name' => $permission['name']], $permission );
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());

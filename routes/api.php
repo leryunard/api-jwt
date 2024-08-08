@@ -28,30 +28,37 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function() {
     Route::get('/me', [UserController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    // Rutas de Categorías
-    Route::get('/categories', [CategoryController::class, 'index']);
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::get('/categories/{id}', [CategoryController::class, 'show']);
-    Route::put('/categories/{id}', [CategoryController::class, 'update']);
-    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
-
-    // Rutas de Productos
-    Route::get('/products', [ProductController::class, 'index']);
-    Route::post('/products', [ProductController::class, 'store']);
-    Route::get('/products/{id}', [ProductController::class, 'show']);
-    Route::put('/products/{id}', [ProductController::class, 'update']);
-    Route::delete('/products/{id}', [ProductController::class, 'destroy']);
-
+    
     Route::get('profile', [AuthController::class, 'profile']);
 
     Route::group(['middleware' => ['role:admin']], function() {
         Route::get('admin', [AuthController::class, 'admin']);
     });
     
-    Route::prefix('post')->group(function () {
-        Route::get('edit-posts', [AuthController::class, 'editPosts'])->middleware(['permission:edit_post']);
-        Route::get('publish-posts', [AuthController::class, 'publishPosts'])->middleware(['permission:publish_post']);
+    Route::prefix('categories')->group(function () { 
+        // Rutas de Categorías
+        Route::get('/', [CategoryController::class, 'index'])->middleware(['permission:categories_index']);
+        Route::post('/', [CategoryController::class, 'store'])->middleware(['permission:categories_store']);
+        Route::get('/{id}', [CategoryController::class, 'show'])->middleware(['permission:categories_show']);
+        Route::put('/{id}', [CategoryController::class, 'update'])->middleware(['permission:categories_update']);
+        Route::delete('/{id}', [CategoryController::class, 'destroy'])->middleware(['permission:categories_destroy']);
     });
 
+    Route::prefix('products')->group(function () { 
+        // Rutas de Productos
+        Route::get('/', [ProductController::class, 'index'])->middleware(['permission:products_index']);
+        Route::post('/', [ProductController::class, 'store'])->middleware(['permission:products_store']);
+        Route::get('/{id}', [ProductController::class, 'show'])->middleware(['permission:products_show']);
+        Route::put('/{id}', [ProductController::class, 'update'])->middleware(['permission:products_update']);
+        Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware(['permission:products_destroy']);
+    });
+
+    Route::prefix('permission')->group(function () {  
+        // Rutas de Productos
+        Route::get('/', [ProductController::class, 'index'])->middleware(['permission:products_index']);
+        Route::post('/', [ProductController::class, 'store'])->middleware(['permission:products_store']);
+        Route::get('/{id}', [ProductController::class, 'show'])->middleware(['permission:products_show']);
+        Route::put('/{id}', [ProductController::class, 'update'])->middleware(['permission:products_update']);
+        Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware(['permission:products_destroy']);
+    });
 });

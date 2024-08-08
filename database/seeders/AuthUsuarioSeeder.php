@@ -20,6 +20,8 @@ class AuthUsuarioSeeder extends Seeder
             'name'    => 'admin',
             'email'       => 'admin@backend.com',
             'password'    => Hash::make('admin123'),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
         // logica de asignacion de roles y permisos
         $adminRole = Role::where('name', 'admin')->where('estado',true)->first();

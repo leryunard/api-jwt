@@ -52,7 +52,10 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::with('category')->findOrFail($id);
+        $product = Product::with('category')->find($id);
+        if (!$product) {
+            return response()->json(['message' => 'Producto no encontrado'], 404);
+        }
         return response()->json($product);
     }
 
@@ -82,6 +85,9 @@ class ProductController extends Controller
         }
 
         $product = Product::find($id);
+        if (!$product) {
+            return response()->json(['message' => 'Producto no encontrado'], 404);
+        }
         $product->update($request->all());
         return response()->json($product);
     }

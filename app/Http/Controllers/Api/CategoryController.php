@@ -11,8 +11,8 @@ class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
-     * php artisan make:controller Api/CategoryController --api (create controller with api resource)
-     */
+     * php artisan make:controller Api/CategoryController --api (create controller with api resource) 
+     */ 
     public function index()
     {
         return response()->json(Category::all());
