@@ -1,29 +1,34 @@
 <?php
 
 use App\Models\SchemaAudit;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     /**
      * Run the migrations.
-     * php artisan make:migration create_categories_table --create=categories
      */
     public function up(): void
     {
-        Schema::create('categories', function (Blueprint $table) {
+        Schema::create('clientes', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nombre', 255);
+            $table->string('nit', 255);
+            $table->string('celular', 255)->nullable();
+            $table->string('email', 255)->nullable();
             $table->timestamps();
         });
-
         $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'categories',
+            'auditable_type' => 'clientes',
             'auditable_id' => 1,
             'new_values' => [
-                'name' => 'string',
+                'id_cliente' => 'id',
+                'nombre' => 'string',
+                'nit' => 'string',
+                'celular' => 'string',
+                'email' => 'string',
                 'created_at' => 'timestamp',
                 'updated_at' => 'timestamp',
             ],
@@ -37,17 +42,21 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('categories');
         $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'categories',
+            'auditable_type' => 'clientes',
             'auditable_id' => 1,
             'new_values' => [
-                'name' => 'string',
+                'id_cliente' => 'id',
+                'nombre' => 'string',
+                'nit' => 'string',
+                'celular' => 'string',
+                'email' => 'string',
                 'created_at' => 'timestamp',
                 'updated_at' => 'timestamp',
             ],
-            'event' => 'dropped',
+            'event' => 'deleted',
         ]);
         $schemaAudit->save();
+        Schema::dropIfExists('clientes');
     }
 };

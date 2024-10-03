@@ -18,19 +18,6 @@ return new class extends Migration
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
-        
-        $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'password_reset_tokens',
-            'auditable_id' => 1,
-            'new_values' => [
-                'email' => 'string',
-                'token' => 'string',
-                'created_at' => 'timestamp',
-            ],
-            'event' => 'created',
-            'performed_at' => now(),
-        ]);
-        $schemaAudit->save();
     }
 
     /**
@@ -39,18 +26,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('password_reset_tokens');
-        $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'schema',
-            'auditable_id' => 'password_reset_tokens',
-            'new_values' => [
-                'user' => auth()->user(),
-                'email' => 'string',
-                'token' => 'string',
-                'created_at' => 'timestamp',
-            ],
-            'event' => 'dropped',
-            'performed_at' => now(),
-        ]);
-        $schemaAudit->save();
     }
 };

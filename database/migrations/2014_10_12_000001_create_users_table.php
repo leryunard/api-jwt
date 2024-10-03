@@ -25,24 +25,6 @@ return new class extends Migration {
                 $table->rememberToken();
                 $table->timestamps();
             });
-
-            $schemaAudit = new SchemaAudit([
-                'auditable_type' => 'users',
-                'auditable_id' => 1,
-                'new_values' => [
-                    'id' => 'bigint',
-                    'name' => 'string',
-                    'email' => 'string',
-                    'email_verified_at' => 'timestamp',
-                    'password' => 'string',
-                    'remember_token' => 'string',
-                    'timestamps' => 'timestamps',
-                ],
-                'event' => 'created',
-                'performed_at' => now(),
-            ]);
-            $schemaAudit->save();
-
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -56,21 +38,5 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('users');
-        $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'schema',
-            'auditable_id' => 'users',
-            'new_values' => [
-                'id' => 'bigint',
-                'name' => 'string',
-                'email' => 'string',
-                'email_verified_at' => 'timestamp',
-                'password' => 'string',
-                'remember_token' => 'string',
-                'timestamps' => 'timestamps',
-            ],
-            'event' => 'dropped',
-            'performed_at' => now(),
-        ]);
-        $schemaAudit->save();
     }
 };

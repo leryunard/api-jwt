@@ -5,31 +5,24 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
-     * php artisan make:migration create_products_table --create=products
+     * php artisan make:migration create_categories_table --create=categories
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('categoria', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->text('description')->nullable();
-            $table->decimal('price', 8, 2);
-            $table->foreignId('category_id')->references('id')->on('categories');
+            $table->string('nombre', 255);
             $table->timestamps();
         });
 
         $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'products',
+            'auditable_type' => 'categoria',
             'auditable_id' => 1,
             'new_values' => [
                 'name' => 'string',
-                'description' => 'text',
-                'price' => 'decimal',
-                'category_id' => 'foreignId',
                 'created_at' => 'timestamp',
                 'updated_at' => 'timestamp',
             ],
@@ -43,15 +36,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('categoria');
         $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'products',
+            'auditable_type' => 'categoria',
             'auditable_id' => 1,
             'new_values' => [
                 'name' => 'string',
-                'description' => 'text',
-                'price' => 'decimal',
-                'category_id' => 'foreignId',
                 'created_at' => 'timestamp',
                 'updated_at' => 'timestamp',
             ],

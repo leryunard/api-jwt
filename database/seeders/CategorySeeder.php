@@ -16,15 +16,15 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         Category::insert([
-            ['name' => 'Furniture',
+            ['nombre' => 'Furniture',
              'created_at' => now(),
              'updated_at' => now(),
             ],
-            ['name' => 'Toys',
+            ['nombre' => 'Toys',
              'created_at' => now(),
              'updated_at' => now(),
             ],
-            ['name' => 'Sports',
+            ['nombre' => 'Sports',
              'created_at' => now(),
              'updated_at' => now(),
             ]

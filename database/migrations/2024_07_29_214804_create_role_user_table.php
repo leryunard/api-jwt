@@ -18,18 +18,6 @@ return new class extends Migration
             $table->foreignId('role_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
-        $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'role_user',
-            'auditable_id' => 1,
-            'new_values' => [
-                'user_id' => 'foreignId',
-                'role_id' => 'foreignId',
-                'created_at' => 'timestamp',
-                'updated_at' => 'timestamp',
-            ],
-            'event' => 'created',
-        ]);
-        $schemaAudit->save();
     }
 
     /**
@@ -38,17 +26,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('role_user');
-        $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'role_user',
-            'auditable_id' => 1,
-            'new_values' => [
-                'user_id' => 'foreignId',
-                'role_id' => 'foreignId',
-                'created_at' => 'timestamp',
-                'updated_at' => 'timestamp',
-            ],
-            'event' => 'dropped',
-        ]);
-        $schemaAudit->save();
     }
 };

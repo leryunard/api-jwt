@@ -9,8 +9,8 @@ class Category extends Model
 {
     // php artisan make:model Category
     use HasFactory;
-    protected $table = 'categories';
-    protected $fillable = ['name'];
+    protected $table = 'categoria';
+    protected $fillable = ['nombre'];
     
     // definición de la relación uno a muchos
     public function products()

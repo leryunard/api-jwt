@@ -53,12 +53,4 @@ Route::middleware('auth:api')->group(function() {
         Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware(['permission:products_destroy']);
     });
 
-    Route::prefix('permission')->group(function () {  
-        // Rutas de Productos
-        Route::get('/', [ProductController::class, 'index'])->middleware(['permission:products_index']);
-        Route::post('/', [ProductController::class, 'store'])->middleware(['permission:products_store']);
-        Route::get('/{id}', [ProductController::class, 'show'])->middleware(['permission:products_show']);
-        Route::put('/{id}', [ProductController::class, 'update'])->middleware(['permission:products_update']);
-        Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware(['permission:products_destroy']);
-    });
 });

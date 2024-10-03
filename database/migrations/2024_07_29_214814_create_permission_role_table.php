@@ -18,19 +18,6 @@ return new class extends Migration
             $table->foreignId('permission_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
-
-        $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'permission_role',
-            'auditable_id' => 1,
-            'new_values' => [
-                'role_id' => 'foreignId',
-                'permission_id' => 'foreignId',
-                'created_at' => 'timestamp',
-                'updated_at' => 'timestamp',
-            ],
-            'event' => 'created',
-        ]);
-        $schemaAudit->save();
     }
 
     /**
@@ -39,17 +26,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('permission_role');
-        $schemaAudit = new SchemaAudit([
-            'auditable_type' => 'permission_role',
-            'auditable_id' => 1,
-            'new_values' => [
-                'role_id' => 'foreignId',
-                'permission_id' => 'foreignId',
-                'created_at' => 'timestamp',
-                'updated_at' => 'timestamp',
-            ],
-            'event' => 'dropped',
-        ]);
-        $schemaAudit->save();
     }
 };
