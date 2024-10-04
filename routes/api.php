@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AlmacenController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,13 +44,13 @@ Route::middleware('auth:api')->group(function() {
         Route::delete('/{id}', [CategoryController::class, 'destroy'])->middleware(['permission:categories_destroy']);
     });
 
-    Route::prefix('products')->group(function () { 
-        // Rutas de Productos
-        Route::get('/', [ProductController::class, 'index'])->middleware(['permission:products_index']);
-        Route::post('/', [ProductController::class, 'store'])->middleware(['permission:products_store']);
-        Route::get('/{id}', [ProductController::class, 'show'])->middleware(['permission:products_show']);
-        Route::put('/{id}', [ProductController::class, 'update'])->middleware(['permission:products_update']);
-        Route::delete('/{id}', [ProductController::class, 'destroy'])->middleware(['permission:products_destroy']);
+    Route::prefix('almacen')->group(function () { 
+        // Rutas de Almacen
+        Route::get('/', [AlmacenController::class, 'index'])->middleware(['permission:almacen_index']);
+        Route::post('/', [AlmacenController::class, 'store'])->middleware(['permission:almacen_store']);
+        Route::get('/{id}', [AlmacenController::class, 'show'])->middleware(['permission:almacen_show']);
+        Route::post('/{id}', [AlmacenController::class, 'update'])->middleware(['permission:almacen_update']);
+        Route::delete('/{id}', [AlmacenController::class, 'destroy'])->middleware(['permission:almacen_destroy']);
     });
 
 });

@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('almacen', function (Blueprint $table) {
             $table->id();
-            $table->string('codigo', 255);
+            $table->string('codigo', 255)->nullable();
             $table->string('nombre', 255);
             $table->text('descripcion')->nullable();
             $table->integer('stock');

@@ -11,10 +11,9 @@ class Category extends Model
     use HasFactory;
     protected $table = 'categoria';
     protected $fillable = ['nombre'];
-    
-    // definición de la relación uno a muchos
-    public function products()
-    {
-        return $this->hasMany(Product::class);
-    }
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 }
