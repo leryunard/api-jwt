@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
@@ -23,24 +24,39 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'name' => 'required|string|max:255',
-            ],
-            [
-                'name.required' => 'El nombre es obligatorio.',
-                'name.string' => 'El nombre debe ser una cadena de texto.',
-                'name.max' => 'El nombre no puede exceder los 255 caracteres.',
-            ],
-        );
+        try {
+            $validator = Validator::make(
+                $request->all(),
+                Category::$rules,
+                Category::$messages,
+            );
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+
+            DB::beginTransaction();
+
+            $category = new Category($request->only('nombre'));
+            $category->created_at = now();
+            $category->updated_at = now();
+            $category->save();
+
+            $id_user = auth()->user()->id;
+            $auditLogs = $category->audits;
+
+            $auditLogs->each(function ($audit) use ($id_user) {
+                $audit->user_id = $id_user;
+                $audit->save();
+            });
+
+            DB::commit();
+
+            return response()->json(['mensaje' => 'Categoría creada correctamente'], 201);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Error al crear la categoría.', 'details' => $e->getMessage()], 500);
         }
-
-        $category = Category::create($request->only('name'));
-        return response()->json($category, 201);
     }
 
     /**
@@ -65,25 +81,45 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validator = Validator::make(
-            $request->all(),
-            [
-                'name' => 'required|string|max:255',
-            ],
-            [
-                'name.required' => 'El nombre es obligatorio.',
-                'name.string' => 'El nombre debe ser una cadena de texto.',
-                'name.max' => 'El nombre no puede exceder los 255 caracteres.',
-            ],
-        );
+        try {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'nombre' => 'required|string|max:255',
+                ],
+                [
+                    'nombre.required' => 'El nombre es obligatorio.',
+                    'nombre.string' => 'El nombre debe ser una cadena de texto.',
+                    'nombre.max' => 'El nombre no puede exceder los 255 caracteres.',
+                ],
+            );
 
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+
+            DB::beginTransaction();
+
+            $category = Category::findOrFail($id);
+            $category->nombre = $request->input('nombre');
+            $category->updated_at = now();
+            $category->save();
+
+            $id_user = auth()->user()->id;
+            $auditLogs = $category->audits;
+
+            $auditLogs->each(function ($audit) use ($id_user) {
+                $audit->user_id = $id_user;
+                $audit->save();
+            });
+
+            DB::commit();
+
+            return response()->json(['mensaje' => 'Categoría actualizada correctamente'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Error al actualizar la categoría.', 'details' => $e->getMessage()], 500);
         }
-
-        $category = Category::findOrFail($id);
-        $category->update($request->only('name'));
-        return response()->json($category);
     }
 
     /**
@@ -91,7 +127,26 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        Category::destroy($id);
-        return response()->json(null, 204);
+        try {
+            DB::beginTransaction();
+
+            $category = Category::findOrFail($id);
+            $category->delete();
+
+            $id_user = auth()->user()->id;
+            $auditLogs = $category->audits;
+
+            $auditLogs->each(function ($audit) use ($id_user) {
+                $audit->user_id = $id_user;
+                $audit->save();
+            });
+
+            DB::commit();
+
+            return response()->json(['mensaje' => 'Categoría eliminada correctamente'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Error al eliminar la categoría.', 'details' => $e->getMessage()], 500);
+        }
     }
 }

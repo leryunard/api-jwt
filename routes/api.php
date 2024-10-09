@@ -35,13 +35,13 @@ Route::middleware('auth:api')->group(function() {
         Route::get('admin', [AuthController::class, 'admin']);
     });
     
-    Route::prefix('categories')->group(function () { 
+    Route::prefix('categoria')->group(function () { 
         // Rutas de Categorías
-        Route::get('/', [CategoryController::class, 'index'])->middleware(['permission:categories_index']);
-        Route::post('/', [CategoryController::class, 'store'])->middleware(['permission:categories_store']);
-        Route::get('/{id}', [CategoryController::class, 'show'])->middleware(['permission:categories_show']);
-        Route::put('/{id}', [CategoryController::class, 'update'])->middleware(['permission:categories_update']);
-        Route::delete('/{id}', [CategoryController::class, 'destroy'])->middleware(['permission:categories_destroy']);
+        Route::get('/', [CategoryController::class, 'index'])->middleware(['permission:categoria_index']);
+        Route::post('/', [CategoryController::class, 'store'])->middleware(['permission:categoria_store']);
+        Route::get('/{id}', [CategoryController::class, 'show'])->middleware(['permission:categoria_show']);
+        Route::put('/{id}', [CategoryController::class, 'update'])->middleware(['permission:categoria_update']);
+        Route::delete('/{id}', [CategoryController::class, 'destroy'])->middleware(['permission:categoria_destroy']);
     });
 
     Route::prefix('almacen')->group(function () { 

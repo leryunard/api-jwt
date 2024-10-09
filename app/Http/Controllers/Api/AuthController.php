@@ -26,7 +26,7 @@ class AuthController extends Controller
 
         $this->validate($request, [
             'name' => 'required|string|min:2|max:255',
-            'email' => 'required|string|email:rfc,dns|max:255|unique:users',
+            'email' => 'required|string|email:rfc,dns|max:255|unique:users,email',
             'password' => 'required|string|min:6|max:255',
         ]);
 
@@ -98,8 +98,13 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $this->validate($request, [
-            'email' => 'required|string',
+            'email' => 'required|string|email:rfc,dns|max:255',
             'password' => 'required|string',
+        ], [
+            'email.required' => 'El campo de correo electrónico es obligatorio.',
+            'email.email' => 'El campo de correo electrónico debe ser una dirección de correo válida.',
+            'email.unique' => 'El correo electrónico ya está en uso.',
+            'password.required' => 'El campo de contraseña es obligatorio.',
         ]);
 
         // attempt a login (validate the credentials provided)
