@@ -64,9 +64,10 @@ class AlmacenController extends Controller
 
         if ($request->hasFile('imagen')) {
             $imagen = $request->file('imagen');
-            $path = $imagen->store('public/productos/' . auth()->user()->id . '/imagenes');
+            $path = $imagen->store('private/productos/' . auth()->user()->id . '/imagenes');
             $validatedData['imagen'] = $path;
         }
+        
         DB::beginTransaction();
         try {
             $almacen = new Almacen($validatedData);
@@ -145,7 +146,7 @@ class AlmacenController extends Controller
             }
 
             $imagen = $request->file('imagen');
-            $path = $imagen->store('public/productos/' . auth()->user()->id . '/imagenes');
+            $path = $imagen->store('private/productos/' . auth()->user()->id . '/imagenes');
             $validatedData['imagen'] = $path;
         }
 
@@ -216,5 +217,34 @@ class AlmacenController extends Controller
                 500,
             );
         }
+    }
+    public function producto_categoria()
+    {
+        // $adminRole = auth()->user()->roles()->where('name', 'admin')->where('estado', true)->first();
+
+        $query = Almacen::select('almacen.id_categoria', DB::raw('COUNT(almacen.id_categoria) AS cantidad_productos')) // Cambia `almacen.nombre` por `MAX` para evitar el error de agrupamiento
+            ->with([
+                'categoria:id,nombre',
+            ])
+            ->groupBy('almacen.id_categoria')
+            ->get();
+
+        return response()->json($query);
+    }
+
+    public function mostrarImagen($filename, Request $request)
+    {
+        // Validar que el usuario esté autenticado y que el token exista
+        $user = auth()->user();
+    
+
+        $filePath = 'private/productos/' . $user->id . '/imagenes/' . $filename;
+
+        if (!Storage::disk('local')->exists($filePath)) {
+            return response()->json(['error' => 'Archivo no encontrado'], 404);
+        }
+
+        return response()->file(storage_path('app/' . $filePath));
+
     }
 }

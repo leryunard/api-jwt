@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -26,5 +27,29 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Handle unauthenticated user.
+     *
+     * @param \Illuminate\Http\Request  $request
+     * @param \Illuminate\Auth\AuthenticationException  $exception
+     * @return \Illuminate\Http\Response
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        // Verifica si la solicitud espera una respuesta JSON
+        if ($request->expectsJson()) {
+            return response()->json([
+                'meta' => [
+                    'code' => 401,
+                    'status' => 'error',
+                    'message' => 'Acceso no autorizado. Por favor, autentícate para continuar.',
+                ]
+            ], 401);
+        }
+
+        // Redirige a la página de login si no es una solicitud JSON
+        return redirect()->guest(route('login'));
     }
 }

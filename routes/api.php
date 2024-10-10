@@ -51,6 +51,8 @@ Route::middleware('auth:api')->group(function() {
         Route::get('/{id}', [AlmacenController::class, 'show'])->middleware(['permission:almacen_show']);
         Route::post('/{id}', [AlmacenController::class, 'update'])->middleware(['permission:almacen_update']);
         Route::delete('/{id}', [AlmacenController::class, 'destroy'])->middleware(['permission:almacen_destroy']);
+        Route::get('/cat_product/contar', [AlmacenController::class, 'producto_categoria'])->middleware('auth:api');
+        Route::get('/imagenes/{filename}', [AlmacenController::class, 'mostrarImagen'])->middleware('auth:api');
     });
 
 });
