@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\ClientesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,17 +26,17 @@ Route::post('/login', [AuthController::class, 'login']);
 // Authenticated only API
 // We use auth api here as a middleware so only authenticated user who can access the endpoint
 // We use group so we can apply middleware auth api to all the routes within the group
-Route::middleware('auth:api')->group(function() {
+Route::middleware('auth:api')->group(function () {
     Route::get('/me', [UserController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    
+
     Route::get('profile', [AuthController::class, 'profile']);
 
-    Route::group(['middleware' => ['role:admin']], function() {
+    Route::group(['middleware' => ['role:admin']], function () {
         Route::get('admin', [AuthController::class, 'admin']);
     });
-    
-    Route::prefix('categoria')->group(function () { 
+
+    Route::prefix('categoria')->group(function () {
         // Rutas de Categorías
         Route::get('/', [CategoryController::class, 'index'])->middleware(['permission:categoria_index']);
         Route::post('/', [CategoryController::class, 'store'])->middleware(['permission:categoria_store']);
@@ -44,7 +45,7 @@ Route::middleware('auth:api')->group(function() {
         Route::delete('/{id}', [CategoryController::class, 'destroy'])->middleware(['permission:categoria_destroy']);
     });
 
-    Route::prefix('almacen')->group(function () { 
+    Route::prefix('almacen')->group(function () {
         // Rutas de Almacen
         Route::get('/', [AlmacenController::class, 'index'])->middleware(['permission:almacen_index']);
         Route::post('/', [AlmacenController::class, 'store'])->middleware(['permission:almacen_store']);
@@ -55,4 +56,12 @@ Route::middleware('auth:api')->group(function() {
         Route::get('/imagenes/{filename}', [AlmacenController::class, 'mostrarImagen'])->middleware('auth:api');
     });
 
+    Route::prefix('clientes')->group(function () {
+        // Rutas de Clientes
+        Route::get('/', [ClientesController::class, 'index'])->middleware(['permission:clientes_index']);
+        Route::post('/', [ClientesController::class, 'store'])->middleware(['permission:clientes_store']);
+        Route::get('/{id}', [ClientesController::class, 'show'])->middleware(['permission:clientes_show']);
+        Route::put('/{id}', [ClientesController::class, 'update'])->middleware(['permission:clientes_update']);
+        Route::delete('/{id}', [ClientesController::class, 'destroy'])->middleware(['permission:clientes_destroy']);
+    });
 });

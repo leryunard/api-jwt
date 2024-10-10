@@ -103,7 +103,6 @@ class AuthController extends Controller
         ], [
             'email.required' => 'El campo de correo electrónico es obligatorio.',
             'email.email' => 'El campo de correo electrónico debe ser una dirección de correo válida.',
-            'email.unique' => 'El correo electrónico ya está en uso.',
             'password.required' => 'El campo de contraseña es obligatorio.',
         ]);
 

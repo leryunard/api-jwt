@@ -14,9 +14,15 @@ class CategoryController extends Controller
      * Display a listing of the resource.
      * php artisan make:controller Api/CategoryController --api (create controller with api resource) 
      */ 
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Category::all());
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search', '');
+
+        $categories = Category::where('nombre', 'like', '%' . $search . '%')
+            ->paginate($perPage);
+
+        return response()->json($categories);
     }
 
     /**
