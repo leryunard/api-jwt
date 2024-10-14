@@ -13,9 +13,21 @@ class ClientesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search', '');
+
+        $query = Clientes::query();
+
+        if (!empty($search)) {
+            $query->where('nombre', 'like', '%' . $search . '%')
+                  ->orWhere('nit', 'like', '%' . $search . '%');
+        }
+
+        $clientes = $query->paginate($perPage);
+
+        return response()->json($clientes, 200);
     }
 
     /**
@@ -68,7 +80,15 @@ class ClientesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $cliente = Clientes::find($id);
+            if (!$cliente) {
+                return response()->json(['error' => 'Cliente no encontrado.'], 404);
+            }
+            return response()->json($cliente, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Cliente no encontrado.', 'detalles' => $e->getMessage()], 404);
+        }
     }
 
     /**
@@ -94,7 +114,10 @@ class ClientesController extends Controller
 
             DB::beginTransaction();
 
-            $cliente = Clientes::findOrFail($id);
+            $cliente = Clientes::find($id);
+            if (!$cliente) {
+                return response()->json(['error' => 'Cliente no encontrado.'], 404);
+            }
             $cliente->fill($request->only('nombre', 'nit', 'celular', 'email'));
             $cliente->updated_at = now();
             $cliente->save();
@@ -121,6 +144,29 @@ class ClientesController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $cliente = Clientes::find($id);
+            if (!$cliente) {
+                return response()->json(['error' => 'Cliente no encontrado.'], 404);
+            }
+            $cliente->delete();
+
+            $id_user = auth()->user()->id;
+            $auditLogs = $cliente->audits;
+
+            $auditLogs->each(function ($audit) use ($id_user) {
+                $audit->user_id = $id_user;
+                $audit->save();
+            });
+
+            DB::commit();
+
+            return response()->json(['mensaje' => 'Cliente eliminado exitosamente'], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['error' => 'Error al eliminar el cliente.', 'detalles' => $e->getMessage()], 500);
+        }
     }
 }
