@@ -106,7 +106,11 @@ class CategoryController extends Controller
 
             DB::beginTransaction();
 
-            $category = Category::findOrFail($id);
+            $category = Category::find($id);
+
+            if (!$category) {
+                return response()->json(['error' => 'Categoría no encontrada.'], 404);
+            }
             $category->nombre = $request->input('nombre');
             $category->updated_at = now();
             $category->save();
@@ -136,7 +140,10 @@ class CategoryController extends Controller
         try {
             DB::beginTransaction();
 
-            $category = Category::findOrFail($id);
+            $category = Category::find($id);
+            if (!$category) {
+                return response()->json(['error' => 'Categoría no encontrada.'], 404);
+            }
             $category->delete();
 
             $id_user = auth()->user()->id;
