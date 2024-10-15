@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ClientesController;
+use App\Http\Controllers\Api\ComprasController;
+use App\Http\Controllers\Api\ProveedoresController;
 
 /*
 |--------------------------------------------------------------------------
@@ -64,4 +66,23 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/{id}', [ClientesController::class, 'update'])->middleware(['permission:clientes_update']);
         Route::delete('/{id}', [ClientesController::class, 'destroy'])->middleware(['permission:clientes_destroy']);
     });
+
+    Route::prefix('proveedores')->group(function () {
+        // Rutas de Proveedores
+        Route::get('/', [ProveedoresController::class, 'index'])->middleware(['permission:proveedores_index']);
+        Route::post('/', [ProveedoresController::class, 'store'])->middleware(['permission:proveedores_store']);
+        Route::get('/{id}', [ProveedoresController::class, 'show'])->middleware(['permission:proveedores_show']);
+        Route::put('/{id}', [ProveedoresController::class, 'update'])->middleware(['permission:proveedores_update']);
+        Route::delete('/{id}', [ProveedoresController::class, 'destroy'])->middleware(['permission:proveedores_destroy']);
+    });
+
+    Route::prefix('compras')->group(function () {
+        // Rutas de Compras
+        Route::get('/', [ComprasController::class, 'index'])->middleware(['permission:compras_index']);
+        Route::post('/', [ComprasController::class, 'store'])->middleware(['permission:compras_store']);
+        Route::get('/{id}', [ComprasController::class, 'show'])->middleware(['permission:compras_show']);
+        Route::put('/{id}', [ComprasController::class, 'update'])->middleware(['permission:compras_update']);
+        Route::delete('/{id}', [ComprasController::class, 'destroy'])->middleware(['permission:compras_destroy']);
+    });
+
 });
