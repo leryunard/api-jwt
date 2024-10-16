@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ClientesController;
 use App\Http\Controllers\Api\ComprasController;
 use App\Http\Controllers\Api\ProveedoresController;
+use App\Http\Controllers\Api\RolesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -85,4 +86,12 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/{id}', [ComprasController::class, 'destroy'])->middleware(['permission:compras_destroy']);
     });
 
+    Route::prefix('roles')->group(function () {
+        // Rutas de Roles
+        Route::get('/', [RolesController::class, 'index'])->middleware(['permission:roles_index']);
+        Route::post('/', [RolesController::class, 'store'])->middleware(['permission:roles_store']);
+        Route::get('/{id}', [RolesController::class, 'show'])->middleware(['permission:roles_show']);
+        Route::put('/{id}', [RolesController::class, 'update'])->middleware(['permission:roles_update']);
+        Route::delete('/{id}', [RolesController::class, 'destroy'])->middleware(['permission:roles_destroy']);
+    });
 });
