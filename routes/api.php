@@ -30,10 +30,8 @@ Route::post('/login', [AuthController::class, 'login']);
 // We use auth api here as a middleware so only authenticated user who can access the endpoint
 // We use group so we can apply middleware auth api to all the routes within the group
 Route::middleware('auth:api')->group(function () {
-    Route::get('/me', [UserController::class, 'me']);
+  
     Route::post('/logout', [AuthController::class, 'logout']);
-
-    Route::get('profile', [AuthController::class, 'profile']);
 
     Route::group(['middleware' => ['role:admin']], function () {
         Route::get('admin', [AuthController::class, 'admin']);
@@ -55,8 +53,8 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{id}', [AlmacenController::class, 'show'])->middleware(['permission:almacen_show']);
         Route::post('/{id}', [AlmacenController::class, 'update'])->middleware(['permission:almacen_update']);
         Route::delete('/{id}', [AlmacenController::class, 'destroy'])->middleware(['permission:almacen_destroy']);
-        Route::get('/cat_product/contar', [AlmacenController::class, 'producto_categoria'])->middleware('auth:api');
-        Route::get('/imagenes/{filename}', [AlmacenController::class, 'mostrarImagen'])->middleware('auth:api');
+        Route::get('/cat_product/contar', [AlmacenController::class, 'producto_categoria']);
+        Route::get('/imagenes/{filename}', [AlmacenController::class, 'mostrarImagen']);
     });
 
     Route::prefix('clientes')->group(function () {
@@ -93,5 +91,13 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{id}', [RolesController::class, 'show'])->middleware(['permission:roles_show']);
         Route::put('/{id}', [RolesController::class, 'update'])->middleware(['permission:roles_update']);
         Route::delete('/{id}', [RolesController::class, 'destroy'])->middleware(['permission:roles_destroy']);
+    });
+
+    Route::prefix('usuarios')->group(function () {
+        // Rutas de Usuarios
+        Route::get('/', [UserController::class, 'index']);
+        Route::get('/{id}', [UserController::class, 'show']);
+        Route::put('/{id}', [UserController::class, 'update']);
+        Route::delete('/{id}', [UserController::class, 'destroy']);
     });
 });
