@@ -123,7 +123,6 @@ class AuthController extends Controller
                     'message' => 'Quote fetched successfully.',
                 ],
                 'data' => [
-                    'user' => auth()->user(),
                     'access_token' => [
                         'token' => $token,
                         'type' => 'Bearer',
