@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ClientesController;
 use App\Http\Controllers\Api\ComprasController;
 use App\Http\Controllers\Api\ProveedoresController;
 use App\Http\Controllers\Api\RolesController;
+use App\Http\Controllers\Api\VentasController;
 
 /*
 |--------------------------------------------------------------------------
@@ -99,5 +100,14 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/{id}', [UserController::class, 'show']);
         Route::put('/{id}', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
+    });
+
+    Route::prefix('ventas')->group(function () {
+        // Rutas de Ventas
+        Route::get('/', [VentasController::class, 'index']);
+        Route::post('/', [VentasController::class, 'store']);
+        Route::get('/{id}', [VentasController::class, 'show']);
+        Route::put('/{id}', [VentasController::class, 'update']);
+        Route::delete('/{id}', [VentasController::class, 'destroy']);
     });
 });
