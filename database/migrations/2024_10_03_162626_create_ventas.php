@@ -14,12 +14,14 @@ return new class extends Migration
     {
         Schema::create('ventas', function (Blueprint $table) {
             $table->id(); 
-            $table->integer('id_cliente');
             $table->integer('total_pagado');
-            $table->foreignId('num_venta')->constrained('carrito');
-            $table->foreignId('id_clientes')->constrained('clientes');
+            $table->unsignedBigInteger('num_venta'); // Aseguramos que sea el mismo tipo
+            $table->foreign('num_venta')->references('num_venta')->on('carrito')->onDelete('cascade');
+            $table->foreignId('id_cliente')->constrained('clientes');
             $table->timestamps();
         });
+
+
         $schemaAudit = new SchemaAudit ([
             'auditable_type' => 'ventas',
             'auditable_id' => 1,

@@ -13,13 +13,13 @@ return new class extends Migration {
     {
         Schema::create('carrito', function (Blueprint $table) {
             $table->id(); 
-            $table->integer('num_venta')->unsigned();
+            $table->unsignedBigInteger('num_venta'); // Cambiamos a unsignedBigInteger para asegurar compatibilidad
+            $table->unique('num_venta'); // Aseguramos que tenga un índice único
             $table->integer('cantidad');
             $table->foreignId('id_almacen')->constrained('almacen');
             $table->timestamps();
         });
         
-
 
         $schemaAudit = new SchemaAudit([
             'auditable_type' => 'carrito',
