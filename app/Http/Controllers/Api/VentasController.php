@@ -13,9 +13,22 @@ class VentasController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $perPage = $request->input('per_page', 10);
+        $search = $request->input('search', '');
+
+        $query = Ventas::with('cliente');
+
+        if (!empty($search)) {
+            $query->orWhereHas('cliente', function ($q) use ($search) {
+                $q->where('nombre', 'like', '%' . $search . '%');
+            });
+        }
+
+        $ventas = $query->paginate($perPage);
+
+        return response()->json($ventas, 200);
     }
 
     /**
