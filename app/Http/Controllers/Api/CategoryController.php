@@ -47,7 +47,8 @@ class CategoryController extends Controller
             $category->created_at = now();
             $category->updated_at = now();
             $category->save();
-
+            
+            // Ejemplo de uso de la auditoria con "Audit"
             $id_user = auth()->user()->id;
             $auditLogs = $category->audits;
 
@@ -82,22 +83,13 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         try {
             $validator = Validator::make(
                 $request->all(),
-                [
-                    'nombre' => 'required|string|max:255',
-                ],
-                [
-                    'nombre.required' => 'El nombre es obligatorio.',
-                    'nombre.string' => 'El nombre debe ser una cadena de texto.',
-                    'nombre.max' => 'El nombre no puede exceder los 255 caracteres.',
-                ],
+                Category::$rules,
+                Category::$messages,
             );
 
             if ($validator->fails()) {
@@ -114,14 +106,6 @@ class CategoryController extends Controller
             $category->nombre = $request->input('nombre');
             $category->updated_at = now();
             $category->save();
-
-            $id_user = auth()->user()->id;
-            $auditLogs = $category->audits;
-
-            $auditLogs->each(function ($audit) use ($id_user) {
-                $audit->user_id = $id_user;
-                $audit->save();
-            });
 
             DB::commit();
 
@@ -144,16 +128,8 @@ class CategoryController extends Controller
             if (!$category) {
                 return response()->json(['error' => 'Categoría no encontrada.'], 404);
             }
+
             $category->delete();
-
-            $id_user = auth()->user()->id;
-            $auditLogs = $category->audits;
-
-            $auditLogs->each(function ($audit) use ($id_user) {
-                $audit->user_id = $id_user;
-                $audit->save();
-            });
-
             DB::commit();
 
             return response()->json(['mensaje' => 'Categoría eliminada correctamente'], 200);

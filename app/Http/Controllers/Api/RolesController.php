@@ -42,16 +42,8 @@ class RolesController extends Controller
      */
     public function store(Request $request)
     {
-        // Validate the request
         try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255|unique:roles,name',
-            ], [
-                'name.required' => 'El campo nombre es obligatorio.',
-                'name.string' => 'El campo nombre debe ser una cadena de texto.',
-                'name.max' => 'El campo nombre no debe exceder los 255 caracteres.',
-                'name.unique' => 'El nombre del rol ya existe.',
-            ]); 
+            $validator = Validator::make($request->all(), Roles::$rules, Roles::$messages);
 
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 400);
@@ -91,28 +83,12 @@ class RolesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        // Validate the request
         try {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255|unique:roles,name,' . $id,
-            ], [
-                'name.required' => 'El campo nombre es obligatorio.',
-                'name.string' => 'El campo nombre debe ser una cadena de texto.',
-                'name.max' => 'El campo nombre no debe exceder los 255 caracteres.',
-                'name.unique' => 'El nombre del rol ya existe.',
-            ]); 
+            $validator = Validator::make($request->all(), Roles::$rules, Roles::$messages);
 
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 400);
@@ -132,10 +108,10 @@ class RolesController extends Controller
 
             DB::commit();
 
-            return response()->json(['message' => 'Role updated successfully'], 200);
+            return response()->json(['message' => 'Rol actualizado correctamente'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['error' => 'Rol actualizado correctamente', 'details' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al actualizar el rol.', 'details' => $e->getMessage()], 500);
         }
     }
 

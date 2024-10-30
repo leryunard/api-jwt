@@ -31,19 +31,10 @@ class ComprasController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        // Validate the request
         try {
             $validator = Validator::make($request->all(), Compras::$rules, Compras::$messages);
 
@@ -85,19 +76,10 @@ class ComprasController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        // Validate the request
         try {
             $validator = Validator::make($request->all(), Compras::$rules, Compras::$messages);
 
@@ -140,7 +122,6 @@ class ComprasController extends Controller
             }
 
             $compra->delete();
-
             DB::commit();
 
             return response()->json(['mensaje' => 'Compra eliminada exitosamente'], 200);

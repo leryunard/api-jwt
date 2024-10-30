@@ -38,19 +38,10 @@ class AlmacenController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //$codigo = 'P-' . str_pad(Almacen::max('id') + 1, 5, '0', STR_PAD_LEFT);
         $validator = Validator::make($request->all(), Almacen::$rules, Almacen::$messages);
 
         if ($validator->fails()) {
@@ -58,7 +49,6 @@ class AlmacenController extends Controller
         }
 
         $validatedData = $validator->validated();
-        //$validatedData['codigo'] = $codigo;
         $validatedData['fecha_ingreso'] = now();
         $validatedData['id_usuario'] = auth()->user()->id; // Asegurarse de que id_usuario esté en los datos validados
 
@@ -110,13 +100,6 @@ class AlmacenController extends Controller
         return response()->json($almacen, 200);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -220,9 +203,8 @@ class AlmacenController extends Controller
     }
     public function producto_categoria()
     {
-        // $adminRole = auth()->user()->roles()->where('name', 'admin')->where('estado', true)->first();
-
-        $query = Almacen::select('almacen.id_categoria', DB::raw('COUNT(almacen.id_categoria) AS cantidad_productos')) // Cambia `almacen.nombre` por `MAX` para evitar el error de agrupamiento
+     
+        $query = Almacen::select('almacen.id_categoria', DB::raw('COUNT(almacen.id_categoria) AS cantidad_productos')) 
             ->with([
                 'categoria:id,nombre',
             ])
@@ -237,7 +219,6 @@ class AlmacenController extends Controller
         // Validar que el usuario esté autenticado y que el token exista
         $user = auth()->user();
     
-
         $filePath = 'private/productos/' . $user->id . '/imagenes/' . $filename;
 
         if (!Storage::disk('local')->exists($filePath)) {

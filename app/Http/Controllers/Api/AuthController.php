@@ -20,10 +20,6 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        // validate the incoming request
-        // set every field as required
-        // set email field so it only accept the valid email format
-
         $this->validate($request, [
             'name' => 'required|string|min:2|max:255',
             'email' => 'required|string|email:rfc,dns|max:255|unique:users,email',
@@ -31,10 +27,8 @@ class AuthController extends Controller
         ]);
 
         try {
-            // start a database transaction
             DB::beginTransaction();
            
-            // if the request valid, create user
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
@@ -56,14 +50,11 @@ class AuthController extends Controller
         
             $userRol->permissions()->attach($lectorPermission);
             $userAsignacion->roles()->attach($userRol);
-
-            // commit the transaction if all the operations are successful
             DB::commit();
 
-            // login the user immediately and generate the token
+            // iniciar sesión del usuario inmediatamente y generar el token
             $token = auth()->login($user);
 
-            // return the response as json 
             return response()->json([
                 'meta' => [
                     'code' => 200,
@@ -75,15 +66,13 @@ class AuthController extends Controller
                     'access_token' => [
                         'token' => $token,
                         'type' => 'Bearer',
-                        'expires_in' => auth()->factory()->getTTL() * 60,    // get token expires in seconds
+                        'expires_in' => auth()->factory()->getTTL() * 60,    // obtener el tiempo de expiración del token en segundos
                     ],
                 ],
             ]);
         } catch (\Exception $e) {
-            // rollback the transaction if any operation fails
             DB::rollback();
 
-            // return the error response as json
             return response()->json([
                 'meta' => [
                     'code' => 500,
@@ -106,14 +95,11 @@ class AuthController extends Controller
             'password.required' => 'El campo de contraseña es obligatorio.',
         ]);
 
-        // attempt a login (validate the credentials provided)
         $token = auth()->attempt([
             'email' => $request->email,
             'password' => $request->password,
         ]);
 
-        // if token successfully generated then display success response
-        // if attempt failed then "unauthenticated" will be returned automatically
         if ($token)
         {
             return response()->json([
@@ -135,10 +121,7 @@ class AuthController extends Controller
 
     public function logout()
     {
-        // get token
         $token = JWTAuth::getToken();
-
-        // invalidate token
         $invalidate = JWTAuth::invalidate($token);
 
         if($invalidate) {

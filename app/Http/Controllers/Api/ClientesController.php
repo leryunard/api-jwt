@@ -31,19 +31,10 @@ class ClientesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        // Validate the request
         try {
             $validator = Validator::make($request->all(), Clientes::$rules, Clientes::$messages);
 
@@ -57,14 +48,6 @@ class ClientesController extends Controller
             $cliente->created_at = now();
             $cliente->updated_at = now();
             $cliente->save();
-
-            $id_user = auth()->user()->id;
-            $auditLogs = $cliente->audits;
-
-            $auditLogs->each(function ($audit) use ($id_user) {
-                $audit->user_id = $id_user;
-                $audit->save();
-            });
 
             DB::commit();
 
@@ -92,19 +75,10 @@ class ClientesController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        // Validate the request
         try {
             $validator = Validator::make($request->all(), Clientes::$rules, Clientes::$messages);
 
@@ -121,14 +95,6 @@ class ClientesController extends Controller
             $cliente->fill($request->only('nombre', 'nit', 'celular', 'email'));
             $cliente->updated_at = now();
             $cliente->save();
-
-            $id_user = auth()->user()->id;
-            $auditLogs = $cliente->audits;
-
-            $auditLogs->each(function ($audit) use ($id_user) {
-                $audit->user_id = $id_user;
-                $audit->save();
-            });
 
             DB::commit();
 
@@ -151,16 +117,8 @@ class ClientesController extends Controller
             if (!$cliente) {
                 return response()->json(['error' => 'Cliente no encontrado.'], 404);
             }
+
             $cliente->delete();
-
-            $id_user = auth()->user()->id;
-            $auditLogs = $cliente->audits;
-
-            $auditLogs->each(function ($audit) use ($id_user) {
-                $audit->user_id = $id_user;
-                $audit->save();
-            });
-
             DB::commit();
 
             return response()->json(['mensaje' => 'Cliente eliminado exitosamente'], 200);

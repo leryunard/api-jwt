@@ -30,19 +30,10 @@ class ProveedoresController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        // Validate the request
         try {
             $validator = Validator::make($request->all(), Proveedor::$rules, Proveedor::$messages);
 
@@ -83,22 +74,12 @@ class ProveedoresController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        // Validate the request
         try {
 
-            // Validar los datos
             $validator = Validator::make($request->all(), Proveedor::rules($id), Proveedor::$messages);
 
             if ($validator->fails()) {
@@ -137,16 +118,8 @@ class ProveedoresController extends Controller
             if (!$proveedor) {
                 return response()->json(['error' => 'Proveedor no encontrado.'], 404);
             }
+
             $proveedor->delete();
-
-            $id_user = auth()->user()->id;
-            $auditLogs = $proveedor->audits;
-
-            $auditLogs->each(function ($audit) use ($id_user) {
-                $audit->user_id = $id_user;
-                $audit->save();
-            });
-
             DB::commit();
 
             return response()->json(['mensaje' => 'Proveedor eliminado exitosamente'], 200);

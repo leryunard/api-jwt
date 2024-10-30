@@ -22,4 +22,14 @@ class Roles extends Model implements AuditableContract
         'updated_at' => 'datetime',
         'estado' => 'boolean',
     ];
+    public static $rules = [
+        'name' => 'required|string|max:255|unique:roles,name',
+    ];
+
+    public static $messages = [
+        'name.required' => 'El campo nombre es obligatorio.',
+        'name.string' => 'El campo nombre debe ser una cadena de texto.',
+        'name.max' => 'El campo nombre no debe exceder los 255 caracteres.',
+        'name.unique' => 'El nombre del rol ya existe.',
+    ];
 }
