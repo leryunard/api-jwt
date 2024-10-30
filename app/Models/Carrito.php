@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
+use OwenIt\Auditing\Auditable;
 
-class Carrito extends Model
+class Carrito extends Model implements AuditableContract
 {
-    use HasFactory;
+    use HasFactory, Auditable;
     protected $table = 'carrito';
 
     protected $fillable = [
@@ -33,8 +35,8 @@ class Carrito extends Model
         'num_venta.required' => 'El num_venta es obligatorio.',
         'num_venta.string' => 'El num_venta debe ser una cadena de texto.',
         'num_venta.max' => 'El num_venta no puede exceder los 255 caracteres.',
-        'id_almacen.required' => 'El id_almacen es obligatorio.',
-        'id_almacen.integer' => 'El id_almacen debe ser un número entero.',
+        'id_almacen.required' => 'El producto es obligatorio.',
+        'id_almacen.integer' => 'El producto debe ser un número entero.',
     ];
 
     public static function rules($id = null)

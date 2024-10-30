@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CarritoController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ClientesController;
 use App\Http\Controllers\Api\ComprasController;
@@ -104,10 +105,19 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix('ventas')->group(function () {
         // Rutas de Ventas
-        Route::get('/', [VentasController::class, 'index']);
-        Route::post('/', [VentasController::class, 'store']);
-        Route::get('/{id}', [VentasController::class, 'show']);
-        Route::put('/{id}', [VentasController::class, 'update']);
-        Route::delete('/{id}', [VentasController::class, 'destroy']);
+        Route::get('/', [VentasController::class, 'index'])->middleware(['permission:ventas_index']);
+        Route::post('/', [VentasController::class, 'store'])->middleware(['permission:ventas_store']);
+        Route::get('/{id}', [VentasController::class, 'show'])->middleware(['permission:ventas_show']);
+        Route::put('/{id}', [VentasController::class, 'update'])->middleware(['permission:ventas_update']);
+        Route::delete('/{id}', [VentasController::class, 'destroy'])->middleware(['permission:ventas_destroy']);
+    });
+
+    Route::prefix('carrito')->group(function () {
+        // Rutas de Carrito
+        Route::get('/', [CarritoController::class, 'index'])->middleware(['permission:compras_index']);
+        Route::post('/', [CarritoController::class, 'store'])->middleware(['permission:compras_store']);
+        Route::get('/{id}', [CarritoController::class, 'show'])->middleware(['permission:compras_show']);
+        Route::put('/{id}', [CarritoController::class, 'update'])->middleware(['permission:compras_update']);
+        Route::delete('/{id}', [CarritoController::class, 'destroy'])->middleware(['permission:compras_destroy']);
     });
 });
